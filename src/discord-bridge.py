@@ -156,6 +156,7 @@ async def on_message(message):
         f"task: [Discord @{username}] {text}{attachment_note}\n"
         f"source: discord\n"
         f"channel_id: {message.channel.id}\n"
+        f"user_id: {message.author.id}\n"
     )
     pending_replies[task_id] = message.channel
 
