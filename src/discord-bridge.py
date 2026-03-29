@@ -138,14 +138,21 @@ async def on_message(message):
         if policy == "allowlist" and sender_id not in allowed:
             return
     else:
-        # Channel access: check channel-specific allowlist, fall back to global
-        if channel_allowed is not None:
-            if sender_id not in channel_allowed:
+        # Channel access control
+        channel_cfg = load_channel_config(str(message.channel.id))
+        if channel_cfg is not None:
+            _, ch_allowed = channel_cfg
+            if ch_allowed is None:
+                pass  # channel set to true — open to all, skip access check
+            elif len(ch_allowed) > 0 and sender_id not in ch_allowed:
                 print(f"  [skip] @{username} not in channel allowlist", flush=True)
                 return
-        elif allowed and sender_id not in allowed:
-            print(f"  [skip] @{username} not in global allowlist", flush=True)
-            return
+            # empty allowFrom with requireMention = anyone who mentions can use
+        else:
+            # Channel not configured — fall back to global allowlist
+            if allowed and sender_id not in allowed:
+                print(f"  [skip] @{username} not in global allowlist", flush=True)
+                return
 
     if policy == "pairing" and sender_id not in allowed:
         # Auto-pair: save their ID and notify
