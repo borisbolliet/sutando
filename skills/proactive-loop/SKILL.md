@@ -62,10 +62,4 @@ Each pass, in order:
 
 9. **Ensure the watcher is running.** If no `fswatch` process on `tasks/`, start one with `bash src/watch-tasks.sh` (`run_in_background: true`). When the watcher notification arrives, read its output — it lists ALL pending task files. Process every one before restarting the watcher.
 
-10. **Monitor Discord.** Check Sutando Discord server channels for new messages:
-    - #dev: 1485653767402553457
-    - #general: 1487549592089137317
-    - #setup-help: 1485653767402553458
-    - #showcase: 1485653767402553459
-    - #bugs: 1487546886092230788
-    Fetch recent messages from each. If there are actionable messages from non-bot users (questions, bugs, requests, feedback), forward a summary to #dev channel (1485653767402553457). Skip bot messages, Zoom invites, and messages already sent by you.
+10. **Monitor Discord.** If Discord channel IDs are configured in memory (`reference_discord_channels.md`), check those channels for new messages. Forward actionable items from public channels to the dev channel. Skip bot messages, Zoom invites, and messages already sent by you.
