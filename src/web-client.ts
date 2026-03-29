@@ -223,6 +223,10 @@ fetch('http://localhost:7844/stand-identity').then(r=>r.json()).then(s=>{
     document.getElementById('stand-name').textContent='Sutando — '+s.name;
     document.getElementById('hero-name').textContent='Sutando — '+s.name;
   }
+  if(s.nameOrigin){
+    var t=document.querySelector('.tagline');
+    if(t) t.textContent=s.nameOrigin.split(' — ')[1]||s.nameOrigin;
+  }
   if(s.avatarGenerated){
     document.getElementById('stand-avatar').style.display='block';
     document.getElementById('hero-avatar').style.display='block';
@@ -233,7 +237,7 @@ fetch('http://localhost:7844/stand-identity').then(r=>r.json()).then(s=>{
 <div class="hero" id="hero">
   <img class="avatar-hero" id="hero-avatar" src="http://localhost:7844/avatar">
   <h2 id="hero-name">Sutando</h2>
-  <p class="tagline">Voice, screen, and task control from one agent</p>
+  <p class="tagline">Your personal AI — talk, and it acts</p>
   <button class="btn-hero" onclick="toggle()">Start Voice</button>
   <p class="or-text">or type below</p>
   <p class="suggestions-label">Try saying or typing</p>
