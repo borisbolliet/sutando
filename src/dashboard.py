@@ -45,7 +45,8 @@ def get_activity(max_items: int = 5) -> list[dict]:
     for part in re.split(r'^## ', content, flags=re.MULTILINE)[1:max_items + 1]:
         lines = part.strip().split('\n')
         header = lines[0].strip().rstrip('-').strip()
-        m = re.match(r'(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2})\s*[—-]\s*(.*)', header)
+        # Match "YYYY-MM-DD HH:MM — title" or "YYYY-MM-DD — title"
+        m = re.match(r'(\d{4}-\d{2}-\d{2}(?:\s+\d{2}:\d{2})?)\s*[—-]\s*(.*)', header)
         if m:
             body = ' '.join(l.strip() for l in lines[1:] if l.strip() and l.strip() != '---')
             entries.append({'time': m.group(1), 'title': m.group(2), 'body': body[:200]})
