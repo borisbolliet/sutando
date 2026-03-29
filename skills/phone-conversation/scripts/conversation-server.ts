@@ -69,6 +69,22 @@ const TASK_POLL_INTERVAL_MS = 500;
 const TASK_TIMEOUT_MS = 120_000;
 const OWNER_NAME = process.env.owner ?? '';
 
+/** Read recent conversation context, relabeled to avoid identity confusion */
+function getSafeContext(lines = 5): string {
+	try {
+		const logPath = join(WORKSPACE_DIR, 'conversation.log');
+		if (!existsSync(logPath)) return '';
+		const entries = readFileSync(logPath, 'utf-8').trim().split('\n').slice(-lines);
+		return entries.map(line => {
+			const [, role, text] = line.split('|', 3);
+			if (!role || !text) return '';
+			if (role === 'user') return `Owner said: ${text}`;
+			if (role === 'assistant') return `You (Sutando) replied: ${text}`;
+			return '';
+		}).filter(Boolean).join('\n');
+	} catch { return ''; }
+}
+
 
 const VERIFIED_CALLERS = new Set(
 	(process.env.VERIFIED_CALLERS ?? '').split(',').map(s => s.trim()).filter(Boolean)
@@ -291,7 +307,7 @@ function buildAgent(callSession: CallSession): MainAgent {
 		instructions = [
 			'You are Sutando, a personal AI assistant.',
 			isInbound && callSession.callerVerified
-				? `Your owner${OWNER_NAME ? ` ${OWNER_NAME}` : ''} is calling you. YOU are Sutando — the AI assistant. The person on the phone is your OWNER, a human. Do NOT confuse yourself with the caller. You have full capabilities — use the work tool for anything: check the screen, send emails, look things up, make calls, browse the web, or check results of previous tasks. Say exactly: "Hi, this is Sutando. How can I help?" then WAIT for them to speak. Do NOT say anything else before they talk. Do NOT make up tasks, scenarios, or pretend you were doing something.`
+				? `Your owner${OWNER_NAME ? ` ${OWNER_NAME}` : ''} is calling you. YOU are Sutando — the AI assistant. The person on the phone is your OWNER, a human. Do NOT confuse yourself with the caller. You have full capabilities — use the work tool for anything: check the screen, send emails, look things up, make calls, browse the web, or check results of previous tasks. Say exactly: "Hi, this is Sutando. How can I help?" then WAIT for them to speak. Do NOT say anything else before they talk. Do NOT make up tasks, scenarios, or pretend you were doing something.${(() => { const ctx = getSafeContext(); return ctx ? `\n\nRecent voice conversation (for context — do NOT repeat or bring up unless asked):\n${ctx}` : ''; })()}`
 				: isInbound
 				? 'Someone is calling you. Be helpful and conversational. Greet them with "Hello, this is Sutando. How can I help?"'
 				: callSession.callerVerified
