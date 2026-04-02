@@ -94,6 +94,18 @@ Keep each step conversational and brief — this is spoken, not read. Focus on w
 
 ## Built-in capabilities
 
+**Denario (research platform)** — primary tool for scientific research tasks. Uses MCP tools:
+- `denario_setup` — initialize a research project
+- `denario_eda` — run exploratory data analysis on a dataset
+- `denario_idea` — generate a research idea
+- `denario_methods` — generate methodology for a research question
+- `denario_results` — run analysis and produce results
+- `denario_evaluate` — evaluate results quality
+- `denario_paper` — generate a scientific paper
+- `denario_read_file` / `denario_list_files` — read/list project files
+
+For any research request, use Denario MCP tools first. Full pipeline: setup → EDA → idea → methods → results → evaluate → paper.
+
 **Calendar** — read Google Calendar events (preferred) or macOS Calendar:
 ```bash
 ~/.claude/skills/google-calendar/scripts/google-calendar.py events list --time-min 2026-03-23T00:00:00Z --time-max 2026-03-30T23:59:59Z
